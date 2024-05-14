@@ -7,6 +7,7 @@ function initializeClient() {
     client = new Client({
         puppeteer: {
             headless: true,
+            executablePath: '/snap/gnome-42-2204/176/usr/bin/chromium',
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         },
         webVersionCache: {
