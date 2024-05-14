@@ -5,9 +5,12 @@ let client;
 
 function initializeClient() {
     client = new Client({
+        puppeteer: {
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        },
         webVersionCache: {
             type: 'remote',
-            authStrategy: new LocalAuth(),
             remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2410.1.html',
         }
     });
