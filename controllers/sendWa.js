@@ -8,7 +8,7 @@ function initializeClient() {
         puppeteer: {
             headless: true,
             // executablePath: '/snap/bin/chromium', // pakai ini untuk server ubuntu
-            executablePath: '/usr/bin/chromium-browser',
+            executablePath: '/usr/bin/chromium-browser', // pakai ini untuk server ubuntu
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         },
         //authStrategy: new LocalAuth(),
