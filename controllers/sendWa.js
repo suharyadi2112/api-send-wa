@@ -7,20 +7,18 @@ function initializeClient() {
     client = new Client({
         puppeteer: {
             headless: true,
-            executablePath: '/snap/bin/chromium', //pakai ini untuk server ubuntu
+            executablePath: '/snap/bin/chromium', // pakai ini untuk server ubuntu
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         },
+        authStrategy: new LocalAuth(),
         webVersionCache: {
             type: 'remote',
-            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
+            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.50.html',
         }
     });
 
-    client.on('ready', () => {
-        console.log('Client is ready!');
-    });
-
     client.on('qr', qr => {
+        console.log('QR code received, please scan:');
         qrcode.generate(qr, { small: true });
     });
 
@@ -28,14 +26,21 @@ function initializeClient() {
         console.log('Client successfully authenticated');
     });
 
+    client.on('ready', () => {
+        console.log('Client is ready!');
+    });
+
+    client.on('disconnected', (reason) => {
+        console.log('Client was logged out', reason);
+        // Reinitialize client if disconnected
+        initializeClient();
+    });
+
     client.initialize();
 }
 
 function sendMessageWhatsAppOTPReservasi(req, res) {
-
     const { no_hp, isi_pesan, fileOrImageUrl } = req.body;
-
-    console.log(res.body)
 
     let resMsg = '';
     let valid = 1;
@@ -64,28 +69,32 @@ function sendMessageWhatsAppOTPReservasi(req, res) {
         return res.status(400).json({ error: resMsg });
     }
 
-    const chatId = req.body.no_hp.substring(1) + '@c.us'; //wajib +62 kayanya
+    const chatId = req.body.no_hp.substring(1) + '@c.us'; // wajib +62 kayanya
 
-    console.log(req.body, "tess")
+    console.log(req.body, "tess");
+    
+    // console.log(req.client, "client");
 
     if (!client) {
-        console.log(`WhatsApp client is not initialized`)
+        console.log('WhatsApp client is not initialized');
         return res.status(500).send('WhatsApp client is not initialized');
     }
 
     client.sendMessage(chatId, isi_pesan)
         .then(response => {
             res.send(`Message sent successfully to ${no_hp}`);
-            console.log(`Message sent successfully to ${no_hp}`)
+            console.log(`Message sent successfully to ${no_hp}`);
         })
         .catch(error => {
             res.status(500).send(`Failed to send message: ${error.message}`);
-            console.error(`Failed to send message: ${error.message}`)
+            console.error(`Failed to send message: ${error.message}`);
         });
 }
 
 module.exports = {
-    client,
     initializeClient,
     sendMessageWhatsAppOTPReservasi
 };
+
+// Initialize the client when the script is first run
+initializeClient();
