@@ -7,13 +7,14 @@ function initializeClient() {
     client = new Client({
         puppeteer: {
             headless: true,
-            executablePath: '/snap/bin/chromium', // pakai ini untuk server ubuntu
+            // executablePath: '/snap/bin/chromium', // pakai ini untuk server ubuntu
+            executablePath: '/usr/bin/chromium-browser',
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         },
-        authStrategy: new LocalAuth(),
+        //authStrategy: new LocalAuth(),
         webVersionCache: {
             type: 'remote',
-            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.50.html',
+            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
         }
     });
 
