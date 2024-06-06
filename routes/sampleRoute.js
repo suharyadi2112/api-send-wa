@@ -5,14 +5,6 @@ const { client, initializeClient, sendMessageWhatsAppOTPReservasi  }  = require(
 
 router.get('/sample', sampleController.getSampleData);
 
-router.get('/status', (req, res) => {
-    if (client && client.info) {
-        res.send('WhatsApp client is running and authenticated.');
-    } else {
-        res.send('WhatsApp client is running but not authenticated.');
-    }
-});
-
 router.get('/qr', (req, res) => {
     if (!client) {
         initializeClient();
